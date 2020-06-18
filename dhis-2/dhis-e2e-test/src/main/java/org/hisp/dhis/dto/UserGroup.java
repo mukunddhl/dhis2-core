@@ -1,4 +1,4 @@
-package org.hisp.dhis.webapi.webdomain.user;
+package org.hisp.dhis.dto;
 
 /*
  * Copyright (c) 2004-2020, University of Oslo
@@ -28,47 +28,17 @@ package org.hisp.dhis.webapi.webdomain.user;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.common.DxfNamespaces;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-
-/**
- * @author Morten Olav Hansen <mortenoh@gmail.com>
- */
-@JacksonXmlRootElement( localName = "dashboard", namespace = DxfNamespaces.DXF_2_0 )
-public class Dashboard
+public class UserGroup
 {
-    private long unreadMessageConversation;
+    private String id;
 
-    private long unreadInterpretations;
-
-    public Dashboard()
+    public String getId()
     {
+        return id;
     }
 
-    @JsonProperty
-    @JacksonXmlProperty( namespace = DxfNamespaces.DXF_2_0 )
-    public long getUnreadMessageConversations()
+    public void setId( String id )
     {
-        return unreadMessageConversation;
-    }
-
-    public void setUnreadMessageConversations( long unreadMessageConversation )
-    {
-        this.unreadMessageConversation = unreadMessageConversation;
-    }
-
-    @JsonProperty
-    @JacksonXmlProperty( namespace = DxfNamespaces.DXF_2_0 )
-    public long getUnreadInterpretations()
-    {
-        return unreadInterpretations;
-    }
-
-    public void setUnreadInterpretations( long unreadInterpretations )
-    {
-        this.unreadInterpretations = unreadInterpretations;
+        this.id = id;
     }
 }

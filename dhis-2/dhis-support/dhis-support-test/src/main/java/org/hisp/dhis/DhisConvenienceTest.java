@@ -36,6 +36,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -51,10 +52,14 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.vividsolutions.jts.geom.Geometry;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.hisp.dhis.analytics.AggregationType;
+import org.hisp.dhis.analytics.UserOrgUnitType;
 import org.hisp.dhis.attribute.Attribute;
 import org.hisp.dhis.attribute.AttributeValue;
 import org.hisp.dhis.category.Category;
@@ -66,14 +71,13 @@ import org.hisp.dhis.category.CategoryOptionGroupSet;
 import org.hisp.dhis.category.CategoryService;
 import org.hisp.dhis.chart.Chart;
 import org.hisp.dhis.chart.ChartType;
-import org.hisp.dhis.color.Color;
-import org.hisp.dhis.color.ColorSet;
 import org.hisp.dhis.common.CodeGenerator;
 import org.hisp.dhis.common.DataDimensionType;
 import org.hisp.dhis.common.DeliveryChannel;
 import org.hisp.dhis.common.DimensionalObject;
 import org.hisp.dhis.common.IdentifiableObject;
 import org.hisp.dhis.common.IllegalQueryException;
+import org.hisp.dhis.common.OrganisationUnitSelectionMode;
 import org.hisp.dhis.common.ValueType;
 import org.hisp.dhis.common.cache.CacheStrategy;
 import org.hisp.dhis.constant.Constant;
@@ -100,6 +104,9 @@ import org.hisp.dhis.indicator.IndicatorGroupSet;
 import org.hisp.dhis.indicator.IndicatorType;
 import org.hisp.dhis.legend.Legend;
 import org.hisp.dhis.legend.LegendSet;
+import org.hisp.dhis.mapping.MapView;
+import org.hisp.dhis.mapping.MapViewRenderingStrategy;
+import org.hisp.dhis.mapping.ThematicMapType;
 import org.hisp.dhis.notification.SendStrategy;
 import org.hisp.dhis.option.Option;
 import org.hisp.dhis.option.OptionSet;
@@ -121,6 +128,7 @@ import org.hisp.dhis.program.ProgramIndicator;
 import org.hisp.dhis.program.ProgramStage;
 import org.hisp.dhis.program.ProgramStageDataElement;
 import org.hisp.dhis.program.ProgramStageSection;
+import org.hisp.dhis.program.ProgramStatus;
 import org.hisp.dhis.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.program.ProgramTrackedEntityAttributeGroup;
 import org.hisp.dhis.program.ProgramType;
@@ -177,11 +185,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.Assert;
 import org.springframework.util.MimeTypeUtils;
 import org.xml.sax.InputSource;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.hash.Hashing;
-import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * @author Lars Helge Overland
@@ -676,8 +679,7 @@ public abstract class DhisConvenienceTest
 
     public static AttributeValue createAttributeValue( Attribute attribute, String value )
     {
-        AttributeValue attributeValue = new AttributeValue( value, attribute );
-        return attributeValue;
+        return new AttributeValue( value, attribute );
     }
 
     /**
@@ -1272,22 +1274,6 @@ public abstract class DhisConvenienceTest
         return legendSet;
     }
 
-    public static ColorSet createColorSet( char uniqueCharacter, String... hexColorCodes )
-    {
-        ColorSet colorSet = new ColorSet();
-        colorSet.setAutoFields();
-        colorSet.setName( "ColorSet" + uniqueCharacter );
-
-        for ( String colorCode : hexColorCodes )
-        {
-            Color color = new Color( colorCode );
-            color.setAutoFields();
-            colorSet.getColors().add( color );
-        }
-
-        return colorSet;
-    }
-
     public static Visualization createVisualization( final String name )
     {
         final Visualization visualization = new Visualization();
@@ -1356,6 +1342,23 @@ public abstract class DhisConvenienceTest
         user.setAutoFields();
 
         return user;
+    }
+
+    public static MapView createMapView( String layer )
+    {
+        MapView mapView = new MapView();
+        mapView.setAutoFields();
+
+        mapView.setLayer( layer );
+        mapView.setAggregationType( AggregationType.SUM );
+        mapView.setThematicMapType( ThematicMapType.CHOROPLETH );
+        mapView.setProgramStatus( ProgramStatus.COMPLETED );
+        mapView.setOrganisationUnitSelectionMode( OrganisationUnitSelectionMode.DESCENDANTS );
+        mapView.setRenderingStrategy( MapViewRenderingStrategy.SINGLE );
+        mapView.setUserOrgUnitType( UserOrgUnitType.DATA_CAPTURE );
+        mapView.setNoDataColor( "#ddeeff" );
+
+        return mapView;
     }
 
     public static UserCredentials createUserCredentials( char uniqueCharacter, User user )
@@ -1846,7 +1849,7 @@ public abstract class DhisConvenienceTest
     public static FileResource createFileResource( char uniqueChar, byte[] content )
     {
         String filename = "filename" + uniqueChar;
-        String contentMd5 = Hashing.md5().hashBytes( content ).toString();
+        String contentMd5 = Arrays.toString( DigestUtils.md5( content ) );
         String contentType = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE;
 
         FileResource fileResource = new FileResource( filename, contentType, content.length, contentMd5,
@@ -1938,7 +1941,7 @@ public abstract class DhisConvenienceTest
     }
 
     public static DataSetNotificationTemplate createDataSetNotificationTemplate(
-        String name, DataSetNotificationRecipient notificationRecipient,
+        DataSetNotificationRecipient notificationRecipient,
         DataSetNotificationTrigger dataSetNotificationTrigger,
         Integer relativeScheduledDays, SendStrategy sendStrategy )
     {
@@ -2237,7 +2240,7 @@ public abstract class DhisConvenienceTest
         user.getUserCredentials().setUserInfo( user );
         userService.addUserCredentials( user.getUserCredentials() );
 
-        Set<GrantedAuthority> grantedAuths = authorities.stream().map( a -> new SimpleGrantedAuthority( a ) )
+        Set<GrantedAuthority> grantedAuths = authorities.stream().map( SimpleGrantedAuthority::new )
             .collect( Collectors.toSet() );
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(

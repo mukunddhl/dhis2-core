@@ -1,4 +1,4 @@
-package org.hisp.dhis.webapi.controller;
+package org.hisp.dhis.webapi.webdomain;
 
 /*
  * Copyright (c) 2004-2020, University of Oslo
@@ -28,17 +28,47 @@ package org.hisp.dhis.webapi.controller;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.color.ColorSet;
-import org.hisp.dhis.schema.descriptors.ColorSetSchemaDescriptor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.hisp.dhis.common.DxfNamespaces;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * @author Lars Helge Overland
+ * @author Morten Olav Hansen <mortenoh@gmail.com>
  */
-@Controller
-@RequestMapping( value = ColorSetSchemaDescriptor.API_ENDPOINT )
-public class ColorSetController
-    extends AbstractCrudController<ColorSet>
+@JacksonXmlRootElement( localName = "dashboard", namespace = DxfNamespaces.DXF_2_0 )
+public class Dashboard
 {
+    private long unreadMessageConversation;
+
+    private long unreadInterpretations;
+
+    public Dashboard()
+    {
+    }
+
+    @JsonProperty
+    @JacksonXmlProperty( namespace = DxfNamespaces.DXF_2_0 )
+    public long getUnreadMessageConversations()
+    {
+        return unreadMessageConversation;
+    }
+
+    public void setUnreadMessageConversations( long unreadMessageConversation )
+    {
+        this.unreadMessageConversation = unreadMessageConversation;
+    }
+
+    @JsonProperty
+    @JacksonXmlProperty( namespace = DxfNamespaces.DXF_2_0 )
+    public long getUnreadInterpretations()
+    {
+        return unreadInterpretations;
+    }
+
+    public void setUnreadInterpretations( long unreadInterpretations )
+    {
+        this.unreadInterpretations = unreadInterpretations;
+    }
 }
