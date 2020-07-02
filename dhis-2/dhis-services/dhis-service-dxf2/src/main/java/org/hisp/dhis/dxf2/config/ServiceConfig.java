@@ -135,17 +135,6 @@ public class ServiceConfig
         return retryTemplate;
     }
 
-    /*
-     * // @formatter:off
-        __  ___ ______ ______ ___     ____   ___   ______ ___
-       /  |/  // ____//_  __//   |   / __ \ /   | /_  __//   |
-      / /|_/ // __/    / /  / /| |  / / / // /| |  / /  / /| |
-     / /  / // /___   / /  / ___ | / /_/ // ___ | / /  / ___ |
-    /_/  /_//_____/  /_/  /_/  |_|/_____//_/  |_|/_/  /_/  |_|
-                                                              
-     * // @formatter:on
-     */
-
     private final static List<Class<? extends ValidationCheck>> CREATE_UPDATE_CHECKS = newArrayList(
     // @formatter:off
         DuplicateIdsCheck.class,
@@ -205,17 +194,6 @@ public class ServiceConfig
             ImportStrategy.DELETE, DELETE_CHECKS );
         // @formatter:on
     }
-
-    /*
-     * // @formatter:off
-      ______ ____   ___    ______ __ __  ______ ____
-     /_  __// __ \ /   |  / ____// //_/ / ____// __ \
-      / /  / /_/ // /| | / /    / ,<   / __/  / /_/ /
-     / /  / _, _// ___ |/ /___ / /| | / /___ / _, _/
-    /_/  /_/ |_|/_/  |_|\____//_/ |_|/_____//_/ |_|
-
-     * // @formatter:on
-     */
 
     /*
      * TRACKER EVENT IMPORT VALIDATION
@@ -318,5 +296,4 @@ public class ServiceConfig
         ) );
         // @formatter:on
     }
-
 }
