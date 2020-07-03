@@ -1849,7 +1849,7 @@ public abstract class DhisConvenienceTest
     public static FileResource createFileResource( char uniqueChar, byte[] content )
     {
         String filename = "filename" + uniqueChar;
-        String contentMd5 = Arrays.toString( DigestUtils.md5( content ) );
+        String contentMd5 = DigestUtils.md5( content ).toString();
         String contentType = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE;
 
         FileResource fileResource = new FileResource( filename, contentType, content.length, contentMd5,
