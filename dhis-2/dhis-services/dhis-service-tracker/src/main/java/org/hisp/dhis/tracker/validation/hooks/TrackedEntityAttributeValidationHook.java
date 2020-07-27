@@ -39,7 +39,6 @@ import org.hisp.dhis.trackedentity.TrackedEntityAttributeService;
 import org.hisp.dhis.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.trackedentityattributevalue.TrackedEntityAttributeValue;
 import org.hisp.dhis.trackedentityattributevalue.TrackedEntityAttributeValueService;
-import org.hisp.dhis.trackedentitycomment.TrackedEntityCommentService;
 import org.hisp.dhis.tracker.TrackerIdScheme;
 import org.hisp.dhis.tracker.TrackerImportStrategy;
 import org.hisp.dhis.tracker.bundle.TrackerBundle;
@@ -72,10 +71,9 @@ public class TrackedEntityAttributeValidationHook
 {
     private static final int MAX_ATTR_VALUE_LENGTH = 1200;
 
-    public TrackedEntityAttributeValidationHook( TrackedEntityAttributeService teAttrService,
-        TrackedEntityCommentService commentService )
+    public TrackedEntityAttributeValidationHook( TrackedEntityAttributeService teAttrService )
     {
-        super( TrackedEntity.class, TrackerImportStrategy.CREATE_AND_UPDATE, teAttrService, commentService );
+        super( TrackedEntity.class, TrackerImportStrategy.CREATE_AND_UPDATE, teAttrService  );
     }
 
     @Autowired

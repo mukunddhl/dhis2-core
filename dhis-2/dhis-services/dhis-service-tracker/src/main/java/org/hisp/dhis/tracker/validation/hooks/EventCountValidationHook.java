@@ -34,7 +34,6 @@ import org.hisp.dhis.program.ProgramInstanceQueryParams;
 import org.hisp.dhis.program.ProgramInstanceService;
 import org.hisp.dhis.trackedentity.TrackedEntityAttributeService;
 import org.hisp.dhis.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.trackedentitycomment.TrackedEntityCommentService;
 import org.hisp.dhis.tracker.TrackerImportStrategy;
 import org.hisp.dhis.tracker.domain.Event;
 import org.hisp.dhis.tracker.report.TrackerErrorCode;
@@ -56,10 +55,9 @@ public class EventCountValidationHook
     @Autowired
     protected ProgramInstanceService programInstanceService;
 
-    public EventCountValidationHook( TrackedEntityAttributeService teAttrService,
-        TrackedEntityCommentService commentService )
+    public EventCountValidationHook( TrackedEntityAttributeService teAttrService )
     {
-        super( Event.class, TrackerImportStrategy.CREATE_AND_UPDATE, teAttrService, commentService );
+        super( Event.class, TrackerImportStrategy.CREATE_AND_UPDATE, teAttrService );
     }
 
     @Override
